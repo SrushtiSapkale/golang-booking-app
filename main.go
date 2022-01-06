@@ -11,7 +11,7 @@ var remainingtickets int = 50
 var bookings []string
 
 func main() {
-
+	// this is a test
 	greet()
 
 	for remainingtickets > 0 && len(bookings) < 50 {
