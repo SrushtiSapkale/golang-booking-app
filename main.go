@@ -8,7 +8,13 @@ import (
 var confname string = "GO BOOK TICKETS"
 var conftickets int = 50
 var remainingtickets int = 50
-var bookings []string
+var bookings = make([]Userdata, 0)
+
+type Userdata struct {
+	username  string
+	email     string
+	notickets int
+}
 
 func main() {
 	greet()
@@ -17,7 +23,7 @@ func main() {
 		//user i/p
 		username, email, usertickets := userip()
 		//validate i/p
-		isvalidname, isvalidemail, isvalidticketno := validateinput(username, email, usertickets)
+		isvalidname, isvalidemail, isvalidticketno := validateinput(username, email, usertickets, remainingtickets)
 		//if i/p is valid
 		if isvalidname && isvalidemail && isvalidticketno {
 
@@ -54,7 +60,7 @@ func greet() {
 	fmt.Println("we have", conftickets, "tickets and only ", remainingtickets, "are remaining")
 }
 
-func validateinput(username string, email string, usertickets int) (bool, bool, bool) {
+func validateinput(username string, email string, usertickets int, remainingtickets int) (bool, bool, bool) {
 	var isvalidname = len(username) >= 2
 	var isvalidemail = strings.Contains(email, "@")
 	isvalidticketno := usertickets > 0 && usertickets <= remainingtickets
@@ -85,7 +91,14 @@ func booktickets(email string, username string, usertickets int) {
 	remainingtickets = remainingtickets - usertickets
 	fmt.Printf("\nThere are now %v tickets remaining.", remainingtickets)
 
-	bookings = append(bookings, username)
+	//user map
+	var userdata = Userdata{
+		username:  username,
+		email:     email,
+		notickets: usertickets,
+	}
+
+	bookings = append(bookings, userdata)
 	fmt.Printf("\nThese are our bookings: %v\n", bookings)
 
 }

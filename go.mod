@@ -1,3 +1,3 @@
-module booking-app
+module bk
 
 go 1.13
