@@ -33,7 +33,7 @@ func main() {
 		if usertickets < remainingtickets {
 			booktickets(email, username, usertickets)
 			//send ticket will become another thread. meanwhile the next command is executed
-			//and when the  sendticket func gets completed it will come in middle without interrupting current pgm
+			//and when the  sendticket func gets completed it will get executed in middle without interrupting current pgm
 
 			//generating and sending ticket task will now run in the background
 			wg.Add(1)
