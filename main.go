@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+	"sync"
+	"time"
 )
 
 var confname string = "GO BOOK TICKETS"
@@ -16,42 +18,50 @@ type Userdata struct {
 	notickets int
 }
 
+var wg = sync.WaitGroup{}
+
 func main() {
 	greet()
 
-	for remainingtickets > 0 && len(bookings) < 50 {
-		//user i/p
-		username, email, usertickets := userip()
-		//validate i/p
-		isvalidname, isvalidemail, isvalidticketno := validateinput(username, email, usertickets, remainingtickets)
-		//if i/p is valid
-		if isvalidname && isvalidemail && isvalidticketno {
+	//	for remainingtickets > 0 && len(bookings) < 50 {
+	//user i/p
+	username, email, usertickets := userip()
+	//validate i/p
+	isvalidname, isvalidemail, isvalidticketno := validateinput(username, email, usertickets, remainingtickets)
+	//if i/p is valid
+	if isvalidname && isvalidemail && isvalidticketno {
+		if usertickets < remainingtickets {
+			booktickets(email, username, usertickets)
+			//send ticket will become another thread. meanwhile the next command is executed
+			//and when the  sendticket func gets completed it will come in middle without interrupting current pgm
 
-			if usertickets < remainingtickets {
-				booktickets(email, username, usertickets)
-				if remainingtickets == 0 {
-					fmt.Printf("\nTICKETS BOOKED OUT!")
-					break
-				}
-			} else {
+			//generating and sending ticket task will now run in the background
+			wg.Add(1)
+			go sendticket(usertickets, username, email)
 
-				fmt.Printf("Sorry, we only have %v tickets\n", remainingtickets)
-
+			if remainingtickets == 0 {
+				fmt.Printf("\nTICKETS BOOKED OUT!")
+				//break
 			}
-
 		} else {
-			if !isvalidname {
-				fmt.Printf("\nName should be more than two characters.")
-			}
-			if !isvalidemail {
-				fmt.Printf("\nEmail should be a valid one please! ")
-			}
-			if !isvalidticketno {
-				fmt.Printf("\nTicket number should be less than %v\n", remainingtickets)
-			}
+
+			fmt.Printf("Sorry, we only have %v tickets\n", remainingtickets)
+
 		}
 
+	} else {
+		if !isvalidname {
+			fmt.Printf("\nName should be more than two characters.")
+		}
+		if !isvalidemail {
+			fmt.Printf("\nEmail should be a valid one please! ")
+		}
+		if !isvalidticketno {
+			fmt.Printf("\nTicket number should be less than %v\n", remainingtickets)
+		}
 	}
+
+	wg.Wait()
 }
 
 func greet() {
@@ -100,5 +110,15 @@ func booktickets(email string, username string, usertickets int) {
 
 	bookings = append(bookings, userdata)
 	fmt.Printf("\nThese are our bookings: %v\n", bookings)
+
+}
+
+func sendticket(usertickets int, username string, email string) {
+	time.Sleep(50 * time.Second)
+	var tick = fmt.Sprintf("\n'%v you have %v tickets", username, usertickets)
+	fmt.Printf("##################")
+	fmt.Printf("\nSending ticket %v'\nto email address %v\n", tick, email)
+	fmt.Printf("##################\n")
+	wg.Done()
 
 }
