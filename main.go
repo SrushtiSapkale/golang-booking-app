@@ -91,6 +91,7 @@ func userip() (string, string, int) {
 
 	fmt.Println("Enter no. of tickets :")
 	fmt.Scan(&usertickets)
+	hi
 
 	return username, email, usertickets
 }
@@ -119,6 +120,7 @@ func sendticket(usertickets int, username string, email string) {
 	fmt.Printf("##################")
 	fmt.Printf("\nSending ticket %v'\nto email address %v\n", tick, email)
 	fmt.Printf("##################\n")
+	fmt.Printf("########hey pr##########\n")
 	wg.Done()
 
 }
