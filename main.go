@@ -119,6 +119,7 @@ func sendticket(usertickets int, username string, email string) {
 	fmt.Printf("##################")
 	fmt.Printf("\nSending ticket %v'\nto email address %v\n", tick, email)
 	fmt.Printf("##################\n")
+ 	fmt.Printf("########hey pr merged##########\n")
 	wg.Done()
 
 }
